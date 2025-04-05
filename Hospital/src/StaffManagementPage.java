@@ -53,32 +53,57 @@ public class StaffManagementPage extends JFrame {
     // Function to Display Default Image
     private void displayImage() {
         rightPanel.removeAll();
-        ImageIcon icon = new ImageIcon("src/icon/staff.jpeg"); // Change path if needed
+
+        // Top panel for back button
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            dispose();
+            new DashboardPage();
+        });
+        topPanel.add(backButton);
+
+        // Image Display
+        ImageIcon icon = new ImageIcon("src/icon/staff.jpeg"); // Adjust path if needed
         Image img = icon.getImage().getScaledInstance(350, 350, Image.SCALE_SMOOTH);
         JLabel imageLabel = new JLabel(new ImageIcon(img));
+
+        rightPanel.add(topPanel, BorderLayout.NORTH);
         rightPanel.add(imageLabel, BorderLayout.CENTER);
         rightPanel.revalidate();
         rightPanel.repaint();
     }
 
+
     // Function to Fetch Staff Details
     private void fetchStaffDetails() {
         rightPanel.removeAll();
 
-        // Add Heading
+        // Top panel with back button
+        JPanel topPanel = new JPanel(new BorderLayout());
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            dispose();
+            new DashboardPage();
+        });
+        topPanel.add(backButton, BorderLayout.EAST);
+
+        // Heading
         JLabel heading = new JLabel("Staff Details", JLabel.CENTER);
         heading.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(heading, BorderLayout.NORTH);
+        topPanel.add(heading, BorderLayout.CENTER);
 
-        // Table Model Setup
+        rightPanel.add(topPanel, BorderLayout.NORTH);
+
+        // Table Setup
         String[] columns = {"Emp ID", "Name", "Role", "Department", "Contact", "Shift"};
         tableModel = new DefaultTableModel(columns, 0);
         table = new JTable(tableModel);
         table.setRowHeight(30);
         table.getTableHeader().setPreferredSize(new Dimension(table.getTableHeader().getPreferredSize().width, 40));
+
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital_mngt_sys", "root", "root")) {
             String query = "SELECT emp_id, name, role, department, contact, shift FROM staff_details";
-
             try (PreparedStatement pstmt = conn.prepareStatement(query);
                  ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -102,16 +127,28 @@ public class StaffManagementPage extends JFrame {
         rightPanel.repaint();
     }
 
+
     // Function to Fetch Login Details
     private void fetchLoginDetails() {
         rightPanel.removeAll();
 
-        // Add Heading
+        // Top panel with back button
+        JPanel topPanel = new JPanel(new BorderLayout());
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            dispose();
+            new DashboardPage();
+        });
+        topPanel.add(backButton, BorderLayout.EAST);
+
+        // Heading
         JLabel heading = new JLabel("Login Details", JLabel.CENTER);
         heading.setFont(new Font("Arial", Font.BOLD, 18));
-        rightPanel.add(heading, BorderLayout.NORTH);
+        topPanel.add(heading, BorderLayout.CENTER);
 
-        // Table Model Setup
+        rightPanel.add(topPanel, BorderLayout.NORTH);
+
+        // Table Setup
         String[] columns = {"Emp ID", "Role", "Login Time", "Feature Accessed"};
         tableModel = new DefaultTableModel(columns, 0);
         table = new JTable(tableModel);
@@ -120,7 +157,6 @@ public class StaffManagementPage extends JFrame {
 
         try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital_mngt_sys", "root", "root")) {
             String query = "SELECT emp_id, role, login_time, feature_accessed FROM staff_logins";
-
             try (PreparedStatement pstmt = conn.prepareStatement(query);
                  ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -141,6 +177,7 @@ public class StaffManagementPage extends JFrame {
         rightPanel.revalidate();
         rightPanel.repaint();
     }
+
 
     // Function to Track Logins (if needed)
     public static void trackLogin(String empId, String role) {
