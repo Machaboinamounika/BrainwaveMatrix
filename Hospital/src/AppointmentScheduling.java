@@ -218,8 +218,10 @@ public class AppointmentScheduling extends JFrame implements ActionListener {
 
             JOptionPane.showMessageDialog(this, "Appointment scheduled successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
             dispose();
+            new HomePage();
         } else if (e.getSource() == cancelBtn) {
             dispose();
+            new HomePage();
         }
     }
 
