@@ -84,13 +84,20 @@ public class StaffLogin extends JFrame implements ActionListener {
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
             String role = (String) roleDropdown.getSelectedItem();
-
             if (authenticateEmployee(empId, username, password, role)) {
+                // First, check access rights
+                if ((featureAccessed.equals("Scheduled Appointments") || featureAccessed.equals("Staff Management")) &&
+                        !(role.equals("Doctor") || role.equals("Admin"))) {
+                    JOptionPane.showMessageDialog(this, "Access Denied: You must be a Doctor or Admin to access this feature.", "Access Denied", JOptionPane.ERROR_MESSAGE);
+                    return; // Don't log or open the feature
+                }
+
+                // Authorized access → log and proceed
                 logStaffLogin(empId, role, featureAccessed);
                 JOptionPane.showMessageDialog(this, "Login Successful! Redirecting to " + featureAccessed);
-
                 dispose();
                 openFeaturePage(featureAccessed, role, username);
+
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Credentials or Role!", "Error", JOptionPane.ERROR_MESSAGE);
             }
