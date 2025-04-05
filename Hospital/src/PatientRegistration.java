@@ -26,6 +26,14 @@ public class PatientRegistration extends JFrame implements ActionListener {
         background.setBounds(0, 0, 1366, 768);
         add(background);
 
+        // Heading (Centered at the top of the form panel)
+        JLabel headingLabel = new JLabel("Patient Registration");
+        headingLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headingLabel.setForeground(Color.BLACK);  // Change text color if needed
+        headingLabel.setHorizontalAlignment(SwingConstants.CENTER);  // Center the text
+        headingLabel.setBounds(0, 20, 1366, 40);  // Set position and size
+        background.add(headingLabel);
+
         // Form Panel
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridLayout(7, 2, 20, 20)); // Grid Layout (7 rows, 2 columns)
