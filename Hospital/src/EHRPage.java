@@ -143,6 +143,19 @@ public class EHRPage extends JFrame implements ActionListener {
 
         try (Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/hospital_mngt_sys", "root", "root")) {
+
+            // First check if patient ID exists in appointments table
+            String checkQuery = "SELECT * FROM appointments WHERE patient_id = ?";
+            PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+            checkStmt.setString(1, patientID);
+            ResultSet checkRs = checkStmt.executeQuery();
+
+            if (!checkRs.next()) {
+                JOptionPane.showMessageDialog(this, "Error: Patient ID doesn't exist in the Appointments table!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Save EHR if patient exists in appointments
             String query = "INSERT INTO ehr (patient_id, diagnosis, treatment, medication, notes) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, patientID);
@@ -151,11 +164,14 @@ public class EHRPage extends JFrame implements ActionListener {
             pstmt.setString(4, medication);
             pstmt.setString(5, notes);
             pstmt.executeUpdate();
+
             JOptionPane.showMessageDialog(this, "EHR Record Saved Successfully!");
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
+
 
     private void searchEHRRecord() {
         String patientID = patientIdField.getText();
@@ -173,7 +189,10 @@ public class EHRPage extends JFrame implements ActionListener {
             ResultSet profileRs = profileStmt.executeQuery();
 
             String profile = "No patient found";
-            if (profileRs.next()) {
+            if (!profileRs.next()) {
+                JOptionPane.showMessageDialog(this, "Patient ID doesn't exist in the patients table!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
                 profile = "Name: " + profileRs.getString("name") + "\n" +
                         "Age: " + profileRs.getInt("age") + "\n" +
                         "Gender: " + profileRs.getString("gender") + "\n" +
